@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Corale.Colore.Core;
 using Corale.Colore.Razer.Keyboard;
 using System;
+using System.Linq;
 
 /// Example Satellite Reign pause mod.
 /// </summary>
@@ -12,6 +13,8 @@ public class RazerChroma : ISrPlugin
     bool firstinit = true;
     private readonly Corale.Colore.Core.Color magenta = new Corale.Colore.Core.Color(128, 0, 128);
     KeyRemapper KRemap = Manager.GetKeyRemapper();
+    private Dictionary<Key, float> refreshTimers = new Dictionary<Key, float>();
+
     /// <summary>
     /// Plugin initialization 
     /// </summary>
@@ -42,6 +45,14 @@ public class RazerChroma : ISrPlugin
                 {
                     Keyboard.Instance[keycode] = UnityEngine.Color.red.ToColore();
                 }
+                else if (a.GetHealthState() != Health.HealthState.alive)
+                {
+                    UpdateKeyColor(keycode, a.GetRespawnTimePct() / 0.5f);
+                }
+                else if (a.GetHealthState() == Health.HealthState.beingRevived)
+                {
+                    Keyboard.Instance[keycode] = UnityEngine.Color.blue.ToColore();
+                }
                 else if (a.Selectable)
                 {
                     if (a.IsSelected())
@@ -62,28 +73,32 @@ public class RazerChroma : ISrPlugin
                         {
                             DeselectAbilities(a);
                             selected_agents.Remove(a);
-                            if (a.GetCurrentWeapon(false) != null)
-                                Keyboard.Instance[keycode] = new Corale.Colore.Core.Color(255, 128, 0);
-                            else
-                                Keyboard.Instance[keycode] = UnityEngine.Color.blue.ToColore();
-                            selected_agents.Remove(a);
                         }
+                        if (a.GetCurrentWeapon(false) != null)
+                            Keyboard.Instance[keycode] = new Corale.Colore.Core.Color(255, 128, 0);
+                        else
+                            Keyboard.Instance[keycode] = UnityEngine.Color.blue.ToColore();
                     }
                 }
             }
-           
+
             if (selected_agents.Count > 0)
                 Keyboard.Instance[KeyCode.F.ToKey()] = UnityEngine.Color.white.ToColore();
             else
                 Keyboard.Instance[KeyCode.F.ToKey()] = magenta;
         }
-        else //if (Manager.Get().LoadingApplication || Manager.Get().GameIsComplete)
+        else
         {
             Keyboard.Instance.SetAll(new Corale.Colore.Core.Color(57, 255, 20));
             firstinit = true;
         }
     }
 
+    private void UpdateKeyColor(Key key, float pct)
+    {
+        UnityEngine.Color color = UnityEngine.Color.Lerp(UnityEngine.Color.red, UnityEngine.Color.black, pct);
+        Keyboard.Instance[key] = color.ToColore();
+    }
     void DeselectAbilities(AgentAI a)
     {
         string[] aNames; int[] aIds;
@@ -141,9 +156,13 @@ public class RazerChroma : ISrPlugin
                         }
 
                         if (abil.GetCooldownPercentage() > 0)
+                        {
                             Keyboard.Instance[keycode.ToKey()] = a.IsSelected() ? UnityEngine.Color.yellow.ToColore() : magenta;
+                        }
                         else if (abil.GetAmmoCount() == 0 && abil.GetMaxAmmo() != 0 && abil.GetCooldownPercentage() > 0)
+                        {
                             Keyboard.Instance[keycode.ToKey()] = a.IsSelected() ? UnityEngine.Color.red.ToColore() : magenta;
+                        }
                     }
 
                 }
@@ -154,7 +173,7 @@ public class RazerChroma : ISrPlugin
 
     public string GetName()
     {
-        return "Razer Chroma support.";
+        return "Razer Chroma support";
     }
 }
 
