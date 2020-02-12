@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using Corale.Colore.Core;
 using Corale.Colore.Razer.Keyboard;
-using System;
-using System.Linq;
 
 /// Example Satellite Reign pause mod.
 /// </summary>
@@ -13,7 +11,6 @@ public class RazerChroma : ISrPlugin
     bool firstinit = true;
     private readonly Corale.Colore.Core.Color magenta = new Corale.Colore.Core.Color(128, 0, 128);
     KeyRemapper KRemap = Manager.GetKeyRemapper();
-    private Dictionary<Key, float> refreshTimers = new Dictionary<Key, float>();
 
     /// <summary>
     /// Plugin initialization 
