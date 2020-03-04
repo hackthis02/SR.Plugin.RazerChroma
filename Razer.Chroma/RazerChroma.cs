@@ -10,7 +10,6 @@ public class RazerChroma : ISrPlugin
     List<AgentAI> selected_agents;
     bool firstinit = true;
     private readonly Corale.Colore.Core.Color magenta = new Corale.Colore.Core.Color(128, 0, 128);
-    KeyRemapper KRemap = Manager.GetKeyRemapper();
 
     /// <summary>
     /// Plugin initialization 
@@ -32,6 +31,10 @@ public class RazerChroma : ISrPlugin
             if (firstinit)
             {
                 Keyboard.Instance.SetAll(magenta);
+                Mouse.Instance.SetAll(magenta);
+                Mouse.Instance.SetAll(magenta);
+                Headset.Instance.SetAll(magenta);
+                ChromaLink.Instance.SetAll(magenta);
                 firstinit = false;
             }
             foreach (AgentAI a in AgentAI.GetAgents())
@@ -87,6 +90,10 @@ public class RazerChroma : ISrPlugin
         else
         {
             Keyboard.Instance.SetAll(new Corale.Colore.Core.Color(57, 255, 20));
+            Mouse.Instance.SetAll(new Corale.Colore.Core.Color(57, 255, 20));
+            Mousepad.Instance.SetAll(new Corale.Colore.Core.Color(57, 255, 20));
+            Headset.Instance.SetAll(new Corale.Colore.Core.Color(57, 255, 20));
+            ChromaLink.Instance.SetAll(new Corale.Colore.Core.Color(57, 255, 20));
             firstinit = true;
         }
     }
